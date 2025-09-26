@@ -1,0 +1,111 @@
+{% extends "blog/base.html" %}
+{% block title %}New Post{% endblock %}
+
+{% block extra_head %}
+<style>
+.post-page{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:calc(100vh - 80px); /* ناقص ارتفاع النافبار */
+  padding:24px;
+  background:var(--bg);
+  transition: background .3s;
+}
+
+.post-card{
+  width:min(600px, 100%);
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px 24px;
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
+  transition: background .3s, border-color .3s;
+}
+
+.post-card h1{
+  margin:0 0 16px;
+  font-size:24px;
+  font-weight:700;
+  color:var(--text);
+}
+
+/* form fields */
+.post-card form p{
+  margin:12px 0;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.post-card form label{
+  font-weight:600;
+  font-size:14px;
+  color:var(--text);
+}
+.post-card input,
+.post-card textarea{
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#f9fafb;
+  transition:.2s;
+}
+.post-card textarea{ min-height:120px; resize:vertical; }
+.post-card input:focus,
+.post-card textarea:focus{
+  border-color:var(--active-bg);
+  box-shadow:0 0 0 3px rgba(99,102,241,.25);
+  outline:none;
+}
+
+/* button */
+.post-card button{
+  margin-top:16px;
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  background:var(--active-bg);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+  width:100%;
+}
+.post-card button:hover{
+  background:#4f46e5;
+}
+.new-post-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 14px;
+  border-radius:8px;
+  background:var(--active-bg);
+  color:#fff !important;
+  font-weight:600;
+  text-decoration:none;
+  transition:.2s;
+}
+.new-post-btn:hover{
+  background:var(--primary-hover);
+}
+.new-post-btn svg{
+  width:16px;
+  height:16px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="post-page">
+  <div class="post-card">
+    <h1>Create Post</h1>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Publish</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "blog/base.html" %}
+{% block title %}Following{% endblock %}
+
+{% block extra_head %}
+<style>
+.section{margin-bottom:32px;}
+
+/* Users */
+.users-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.user-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
+  transition:.3s;
+}
+.user-card:hover{box-shadow:0 6px 16px rgba(0,0,0,.08);}
+.user-card .username{font-weight:600; color:var(--text);}
+.user-card button{
+  padding:8px 14px;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+.user-card button.follow{background:var(--active-bg); color:#fff;}
+.user-card button.follow:hover{background:var(--primary-hover);}
+.user-card button.unfollow{background:#e5e7eb; color:var(--text);}
+.user-card button.unfollow:hover{background:#d1d5db;}
+
+/* Posts */
+.post-list{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.post-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px 20px;
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
+  transition:.3s;
+}
+.post-card:hover{ box-shadow:0 6px 16px rgba(0,0,0,.08); }
+.post-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.post-author{font-weight:600; color:var(--active-bg);}
+.post-date{font-size:13px; color:var(--muted);}
+.post-title{margin:6px 0; font-size:18px; font-weight:700;}
+.post-body{margin:6px 0 12px; line-height:1.5;}
+.actions{display:flex; align-items:center; gap:12px;}
+.actions form{display:inline;}
+.actions button{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:14px;
+  padding:6px 10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  transition:.2s;
+}
+.actions button.like{background:var(--active-bg); color:#fff;}
+.actions button.unlike{background:#e5e7eb; color:var(--text);}
+.actions button.unlike:hover{background:#d1d5db;}
+.like-count{font-size:13px; color:var(--muted);}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Following</h1>
+
+<!-- Section 1: Users -->
+<div class="section">
+  <h2>People</h2>
+  <div class="users-list">
+    {% for u in users %}
+      <div class="user-card">
+        <span class="username">@{{ u.username }}</span>
+        <form method="post" action="{% url 'blog:toggle_follow' u.id %}">
+          {% csrf_token %}
+          {% if u.id in following_ids %}
+            <button type="submit" class="unfollow">Unfollow</button>
+          {% else %}
+            <button type="submit" class="follow">Follow</button>
+          {% endif %}
+        </form>
+      </div>
+    {% empty %}
+      <p>No other users yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<hr>
+
+<!-- Section 2: Posts -->
+<div class="section">
+  <h2>Feed</h2>
+  {% if posts %}
+    <div class="post-list">
+      {% for post in posts %}
+        <div class="post-card">
+          <div class="post-header">
+            <span class="post-author">@{{ post.author.username }}</span>
+            <span class="post-date">{{ post.created_at|date:"Y-m-d H:i" }}</span>
+          </div>
+          <h3 class="post-title">{{ post.title }}</h3>
+          <p class="post-body">{{ post.body }}</p>
+
+          <div class="actions">
+            <form method="post" action="{% url 'blog:toggle_like' post.id %}">
+              {% csrf_token %}
+              {% if post.id in liked_posts %}
+                <button type="submit" class="unlike">Unlike</button>
+              {% else %}
+                <button type="submit" class="like">Like</button>
+              {% endif %}
+            </form>
+            <span class="like-count">{{ post.likes.count }} likes</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No posts from people you follow yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

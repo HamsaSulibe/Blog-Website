@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}My Blog{% endblock %}</title>
+    <style>
+        /* ================== Theme Variables ================== */
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background .3s, color .3s;
+        }
+
+        /* Light mode */
+        :root {
+            /* ألوان عامة */
+            --primary: #3e3e42;
+            /* رمادي غامق أنيق (بدل الأزرق) */
+            --primary-hover: #75747c;
+            /* لون أفتح للهوفر */
+            --focus: rgba(92, 92, 95, 0.25);
+            /* ظل عند التركيز */
+            --radius: 16px;
+            /* نصف قطر الحواف */
+        }
+
+        /* Light mode */
+        body.light {
+            --bg: #f5f7fa;
+            /* خلفية فاتحة رمادية */
+            --text: #2f3640;
+            /* النص الأساسي */
+            --card: #ffffff;
+            /* الكروت */
+            --border: #e6e9ef;
+            /* حدود ناعمة */
+            --muted: #6b7280;
+            /* النصوص الثانوية */
+
+            --nav-bg: #ffffff;
+            /* نافبار أبيض */
+            --nav-border: #e6e9ef;
+            --nav-link: #6b7280;
+            --nav-link-hover: #111827;
+
+            --active-bg: #3e3e42;
+            /* زر أساسي باللون الجديد */
+            --active-text: #fff;
+
+            --logout-bg: #ef4444;
+            /* زر خروج أحمر */
+            --logout-hover: #dc2626;
+        }
+
+        /* Dark mode */
+        body.dark {
+            --bg: #000000;
+            /* أسود كامل */
+            --text: #f5f5f5;
+            /* النصوص بالرمادي الفاتح */
+            --card: #1a1a1a;
+            /* الكروت غامقة */
+            --border: #2d2d2d;
+            /* حدود غامقة شوي */
+
+            --muted: #9ca3af;
+            /* النصوص الثانوية */
+
+            --nav-bg: #0d0d0d;
+            /* نافبار أسود غامق */
+            --nav-border: #2d2d2d;
+            --nav-link: #9ca3af;
+            --nav-link-hover: #ffffff;
+
+            --active-bg: #3e3e42;
+            /* الأزرار نفس اللون الأساسي */
+            --active-text: #fff;
+
+            --logout-bg: #b91c1c;
+            --logout-hover: #991b1b;
+        }
+
+
+        /* ================== Navbar ================== */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--nav-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background .3s, border-color .3s;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 20px;
+            color: #3e3e42;
+            /* سكني غامق */
+            text-decoration: none;
+        }
+
+        .links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .links a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--nav-link);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: .2s;
+        }
+
+        .links a:hover {
+            background: rgba(99, 102, 241, .1);
+            color: var(--nav-link-hover);
+        }
+
+        .links a.active {
+            background: var(--active-bg);
+            color: var(--active-text);
+        }
+
+        .links svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Logout button */
+        nav form button {
+            background: var(--logout-bg);
+            color: #fff;
+            border: 0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        nav form button:hover {
+            background: var(--logout-hover)
+        }
+
+        .user {
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        /* Dark mode toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark #sun {
+            color: #ffffff;
+            /* أبيض */
+        }
+
+        body.dark .user-card button.unfollow {
+            background: #3e3e42;
+            /* نفس لون primary */
+            color: #f5f5f5;
+            /* نص فاتح */
+        }
+
+        body.dark .user-card button.unfollow:hover {
+            background: #57575c;
+            /* درجة أفتح شوي */
+        }
+
+        body.dark .actions button.like {
+            background: #3e3e42;
+            color: #f5f5f5;
+        }
+
+        body.dark .actions button.unlike {
+            background: #3e3e42;
+            color: #f87171;
+            /* أحمر فاتح يوضح أنه Unlike */
+        }
+
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(99, 102, 241, .15);
+        }
+
+        /* ================== Main Content ================== */
+        main {
+            max-width: 900px;
+            margin: auto;
+            padding: 24px;
+        }
+
+        h1 {
+            color: var(--text);
+        }
+
+        p {
+            color: var(--muted);
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .welcome-badge {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            transition: background .3s, color .3s;
+        }
+
+        body.dark .welcome-badge {
+            background: #1f1f1f;
+            border-color: #333;
+            color: #f5f5f5;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="light">
+    <nav>
+        <a href="{% url 'blog:index' %}" class="logo">MyBlog</a>
+        <div class="links">
+            <a href="{% url 'blog:index' %}"
+                class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2L2 8h2v8h4V12h4v4h4V8h2L10 2z" />
+                </svg>
+                Home
+            </a>
+            <a href="{% url 'blog:following' %}"
+                class="{% if request.resolver_match.url_name == 'following' %}active{% endif %}">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 7a3 3 0 11-6 0 3 3 0 016 0zM5 14a5 5 0 0110 0v1H5v-1z" />
+                </svg>
+                Following
+            </a>
+
+            {% if user.is_authenticated %}
+            <div class="welcome-badge">
+                Welcome, <strong>{{ user.username }}</strong>
+            </div>
+
+            <a href="{% url 'blog:post_create' %}"
+                class="{% if request.resolver_match.url_name == 'post_create' %}active{% endif %}">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+                </svg>
+                New Post
+            </a>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}?next={{ request.path }}"
+                class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 10a7 7 0 1114 0A7 7 0 013 10z" />
+                </svg>
+                Login
+            </a>
+            <a href="{% url 'blog:signup' %}"
+                class="{% if request.resolver_match.url_name == 'signup' %}active{% endif %}">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8 9a3 3 0 116 0 3 3 0 01-6 0zM2 16a6 6 0 1112 0H2z" />
+                </svg>
+                Signup
+            </a>
+            {% endif %}
+
+            <!-- Dark mode toggle -->
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <svg id="moon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8 8 0 1010.586 10.586z" />
+                </svg>
+                <svg id="sun" style="display:none" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M10 15a5 5 0 100-10 5 5 0 000 10zM10 1a1 1 0 011-1v1a1 1 0 11-2 0V0a1 1 0 011 1zm0 18a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1z" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        const toggleBtn = document.getElementById("theme-toggle");
+        const body = document.body;
+        const moonIcon = document.getElementById("moon");
+        const sunIcon = document.getElementById("sun");
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+            body.classList.remove("light", "dark");
+            body.classList.add(savedTheme);
+            if (savedTheme === "dark") {
+                moonIcon.style.display = "none";
+                sunIcon.style.display = "block";
+            }
+        }
+
+        toggleBtn.addEventListener("click", () => {
+            const darkMode = !body.classList.contains("dark");
+            body.classList.toggle("dark", darkMode);
+            body.classList.toggle("light", !darkMode);
+            moonIcon.style.display = darkMode ? "none" : "block";
+            sunIcon.style.display = darkMode ? "block" : "none";
+            localStorage.setItem("theme", darkMode ? "dark" : "light");
+        });
+    </script>
+</body>
+
+</html>
