@@ -7,7 +7,8 @@ A blog application built with Django. It includes a server-rendered web UI (Djan
 Built during my summer internship as a training project to practice Django development (web UI + REST API), authentication (JWT), and relational data modeling (posts, likes, follows).
 
 ## Features
-Web UI (templates)
+
+### Web UI (templates)
 - View all posts
 - Following feed (posts from users you follow)
 - Create, edit, delete posts (edit/delete restricted to the author)
@@ -15,9 +16,10 @@ Web UI (templates)
 - Follow/unfollow users
 - Login and signup pages
 
-REST API
+### REST API
 - CRUD endpoints for: users, posts, likes, follows
 - JWT auth endpoints (access/refresh)
+
 
 ## Main Models
 - Post: author, title (optional), body, created_at (newest-first ordering)
