@@ -1,6 +1,10 @@
+````md
 # Blog Project (Django + DRF + JWT)
 
 A blog application built with Django. It includes a server-rendered web UI (Django templates) and a REST API (Django REST Framework) secured with JWT (SimpleJWT). The app supports posts, likes, and following users.
+
+## About this project
+Built during my summer internship as a training project to practice Django development (web UI + REST API), authentication (JWT), and relational data modeling (posts, likes, follows).
 
 ## Features
 Web UI (templates)
@@ -35,9 +39,9 @@ REST API
   - `templates/`: HTML templates for blog pages and auth pages
 
 ## Routing Note (important)
-The templates and web views exist, but `blog/urls.py` currently exposes the API router while the web routes are commented out.
-Also, `LOGIN_REDIRECT_URL` points to `blog:following`, so if web routes are disabled, login/signup redirects may fail.
-Recommended setup: enable web routes and mount the API under `/api/` to avoid conflicts.
+- Web pages exist, but `blog/urls.py` currently exposes the API router while web routes are commented out.
+- `LOGIN_REDIRECT_URL` points to `blog:following`, so enable web routes (or adjust the redirect) to avoid login redirect issues.
+- Recommended setup: enable web routes and mount the API under `/api/` to avoid conflicts.
 
 ## Run Locally
 1) Create and activate a virtual environment
@@ -119,3 +123,6 @@ Thumbs.db
 ```
 
 Avoid committing `db.sqlite3` and virtual environment folders.
+
+```
+```
