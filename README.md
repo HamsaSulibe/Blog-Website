@@ -1,4 +1,4 @@
-````md
+````
 # Blog Project (Django + DRF + JWT)
 
 A blog application built with Django. It includes a server-rendered web UI (Django templates) and a REST API (Django REST Framework) secured with JWT (SimpleJWT). The app supports posts, likes, and following users.
